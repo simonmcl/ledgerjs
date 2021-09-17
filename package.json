@@ -17,7 +17,8 @@
     "watch": "lerna run --parallel watch",
     "clean": "rm -rf node_modules packages/*/node_modules/ packages/*/lib",
     "rebuild": "lerna run clean && lerna run build",
-    "publish": "yarn && lerna run clean && lerna run build && lerna publish --registry=https://registry.npmjs.org/"
+    "publish": "yarn && lerna run clean && lerna run build && lerna publish --registry=https://registry.npmjs.org/",
+    "build-webpack": "webpack --progress --color"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
@@ -36,7 +37,10 @@
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.3",
-    "uglify-js": "^3.14.2"
+    "uglify-js": "^3.14.2",
+    "webpack": "^5.53.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
     "js-levenshtein": "^1.1.6"
