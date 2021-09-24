@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        "ledger_device_apdu": ['./src/ble/receiveAPDU.ts']
+        "ledger_device_apdu": ['./src/ble/nativeSendAPDU.ts']
     },
     mode: 'production',
     module: {

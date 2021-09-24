@@ -16,7 +16,7 @@ class NativeTransport extends Transport {
       nativeWriter("inside constructor")
     }
 
-    
+
 
     decorateAppAPIMethods(
       self: Record<string, any>,
@@ -33,19 +33,15 @@ class NativeTransport extends Transport {
       }
     }
 
-    send = async (
-      cla: number,
-      ins: number,
-      p1: number,
-      p2: number,
-      data: Buffer = Buffer.alloc(0)
-    ): Promise<Buffer> => {
+    send = async (cla: number, ins: number, p1: number, p2: number, data: Buffer = Buffer.alloc(0)): Promise<Buffer> => {
       
       const buffer = Buffer.concat([
         Buffer.from([cla, ins, p1, p2]),
         Buffer.from([data.length]),
         data,
       ])
+      
+      // sendAPDU(this.nativeWriteFunction, buffer, this.mtuSize)
 
       const msgIn = buffer.toString("hex")
       this.nativeWriteFunction(msgIn)

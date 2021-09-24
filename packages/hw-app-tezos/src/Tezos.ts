@@ -193,6 +193,22 @@ class Tezos {
   }
 }
 
+function convertNativeAddress(hex: string): GetAddressResult {
+  let payload = new Buffer(hex, "hex")
+
+  const publicKeyLength = payload[0];
+    if (!publicKeyLength) {
+      // it seems to be a bug that apps returns empty answer
+      throw new Error("invalid public key");
+    }
+    const publicKey = payload.slice(1, 1 + publicKeyLength);
+    const res: GetAddressResult = {
+      publicKey: publicKey.toString("hex"),
+      address: encodeAddress(publicKey, 0),
+    };
+    return res;
+}
+
 // TODO use bip32-path library
 function splitPath(path: string): number[] {
   const result: number[] = [];
@@ -266,5 +282,6 @@ const encodeAddress = (publicKey: Buffer, curve: Curve) => {
 
 module.exports = {
   tezosCurves: TezosCurves,
-  tezos: Tezos
+  tezos: Tezos,
+  convertNativeAddress: convertNativeAddress
 }
