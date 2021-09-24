@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        "ledgerjs": ['./packages/hw-app-tezos', './packages/hw-transport', './packages/react-native-hw-transport-ble', './packages/errors', './packages/devices']
+        "ledger_device_apdu": ['./src/ble/receiveAPDU.ts']
     },
     mode: 'production',
     module: {
@@ -22,7 +22,7 @@ module.exports = {
     },
     devtool: 'source-map',
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: ['.tsx', '.ts', '.js', '.jsx'],
         modules: ['node_modules'],
         fallback: { 
             "stream": require.resolve("stream-browserify") 
@@ -36,5 +36,5 @@ module.exports = {
     },
     plugins: [
         new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
-    ]
+    ],
 };

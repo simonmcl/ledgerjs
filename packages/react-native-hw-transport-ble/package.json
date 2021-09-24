@@ -30,6 +30,7 @@
     "@ledgerhq/hw-transport": "^6.7.0",
     "@ledgerhq/logs": "^6.2.0",
     "invariant": "^2.2.4",
+    "react": "^17.0.2",
     "react-native-ble-plx": "1.0.1",
     "rxjs": "6",
     "uuid": "^3.4.0"
@@ -37,7 +38,19 @@
   "scripts": {
     "clean": "bash ../../script/clean.sh",
     "build": "bash ../../script/build.sh",
-    "watch": "bash ../../script/watch.sh"
+    "watch": "bash ../../script/watch.sh",
+    "build-webpack": "webpack --progress --color"
   },
-  "gitHead": "dd0dea64b58e5a9125c8a422dcffd29e5ef6abec"
+  "gitHead": "dd0dea64b58e5a9125c8a422dcffd29e5ef6abec",
+  "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/plugin-syntax-flow": "^7.14.5",
+    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-flow": "^7.14.5",
+    "@babel/preset-react": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "ts-loader": "^9.2.5"
+  }
 }

@@ -18,20 +18,24 @@ import invariant from "invariant";
 import bs58check from "bs58check";
 import blake2b from "blake2b";
 import type Transport from "@ledgerhq/hw-transport";
-export const TezosCurves = {
+
+const TezosCurves = {
   ED25519: 0x00,
   SECP256K1: 0x01,
   SECP256R1: 0x02,
 };
-export type Curve = typeof TezosCurves[keyof typeof TezosCurves];
-export type GetAddressResult = {
+
+type Curve = typeof TezosCurves[keyof typeof TezosCurves];
+type GetAddressResult = {
   address: string;
   publicKey: string;
 };
-export type SignOperationResult = {
+
+type SignOperationResult = {
   signature: string;
 };
-export type GetVersionResult = {
+
+type GetVersionResult = {
   major: number;
   minor: number;
   patch: number;
@@ -45,7 +49,7 @@ export type GetVersionResult = {
  * const tez = new Tezos(transport)
  */
 
-export default class Tezos {
+class Tezos {
   transport: Transport;
 
   constructor(transport: Transport) {
@@ -257,3 +261,10 @@ const encodeAddress = (publicKey: Buffer, curve: Curve) => {
   );
   return address;
 };
+
+
+
+module.exports = {
+  tezosCurves: TezosCurves,
+  tezos: Tezos
+}

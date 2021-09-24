@@ -50,7 +50,7 @@ export type Observer<Ev> = Readonly<{
  * it can be for instance an ID, an file path, a URL,...
  */
 
-export default class Transport {
+export class Transport {
   exchangeTimeout = 30000;
   unresponsiveTimeout = 15000;
   deviceModel: DeviceModel | null | undefined = null;
@@ -269,9 +269,7 @@ export default class Transport {
   }
 
   exchangeBusyPromise: Promise<void> | null | undefined;
-  exchangeAtomicImpl = async (
-    f: () => Promise<Buffer | void>
-  ): Promise<Buffer | void> => {
+  exchangeAtomicImpl = async (f: () => Promise<Buffer | void>): Promise<Buffer | void> => {
     if (this.exchangeBusyPromise) {
       throw new TransportRaceCondition(
         "An action was already pending on the Ledger device. Please deny or reconnect."

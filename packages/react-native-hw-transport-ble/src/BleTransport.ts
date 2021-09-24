@@ -257,6 +257,23 @@ async function open(deviceOrId: Device | string, needsReconnect: boolean) {
 
   return transport;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * react-native bluetooth BLE implementation
  * @example
