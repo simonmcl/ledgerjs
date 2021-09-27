@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        "ledger_app_tezos": ['./src/Tezos.ts']
+        "ledger_app_tezos": ['./src/NativeMobileTezos.ts']
     },
     mode: 'production',
     module: {

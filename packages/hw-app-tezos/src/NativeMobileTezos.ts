@@ -29,7 +29,7 @@ and leveraged using JSContext
 import invariant from "invariant";
 import bs58check from "bs58check";
 import blake2b from "blake2b";
-import Transport from "@ledgerhq/hw-transport";
+//import Transport from "@ledgerhq/hw-transport";
 
 
 
@@ -38,13 +38,13 @@ import Transport from "@ledgerhq/hw-transport";
 Native Transport
 */
 
-class NativeTransport extends Transport {
+class NativeTransport {
 	
 	mtuSize = 20;
 	nativeWriteFunction: (data: String) => void;
 	
 	constructor(nativeWriter: (data: String) => void) {
-		super()
+		//super()
 		this.nativeWriteFunction = nativeWriter
 	}
 
@@ -93,7 +93,7 @@ It will be up to the native code to seperate this into multiple strings and send
 Also removed the returned Observable. Its up to the native code to detect errors and decide whether or not to
 call the next function, or surface an error to the user.
 */
-const sendAPDU = (write: (data: String) => void, apduString: string, mtuSize: number): void => {
+const sendAPDU = (apduString: string, mtuSize: number): String => {
 
 	let apdu = new Buffer(apduString, "hex")
 
@@ -116,7 +116,7 @@ const sendAPDU = (write: (data: String) => void, apduString: string, mtuSize: nu
 		chunkedString += " "
 	}
 
-	write(chunkedString);
+	return chunkedString;
 };
 
 
@@ -140,11 +140,11 @@ const receiveAPDU = (apduString: string): any => {
 	let data = apdu.slice(3);
 
 	if (tag !== TagId) {
-		return { data: null, error: "Invalid tag " + tag.toString(16) };
+		return { data: "null", error: "Invalid tag " + tag.toString(16) };
 	}
 
 	if (notifiedIndex !== index) {
-		return { data: null, error: "BLE: Invalid sequence number. discontinued chunk. Received " + index + " but expected " + notifiedIndex }
+		return { data: "null", error: "BLE: Invalid sequence number. discontinued chunk. Received " + index + " but expected " + notifiedIndex }
 	}
 
 	if (index === 0) {
@@ -156,14 +156,14 @@ const receiveAPDU = (apduString: string): any => {
 	notifiedData = Buffer.concat([notifiedData, data]);
 
 	if (notifiedData.length > notifiedDataLength) {
-		return { data: null, error: "BLE: received too much data. discontinued chunk. Received " + notifiedData.length + " but expected " + notifiedDataLength };
+		return { data: "null", error: "BLE: received too much data. discontinued chunk. Received " + notifiedData.length + " but expected " + notifiedDataLength };
 	}
 
 	if (notifiedData.length === notifiedDataLength) {
-		return { data: notifiedData.toString("hex"), error: null };
+		return { data: notifiedData.toString("hex"), error: "null" };
 	}
 
-	return { data: null, error: null }
+	return { data: "null", error: "null" }
 };
 
 
