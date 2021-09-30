@@ -18,7 +18,7 @@
 
 
 /*
-This is a modified version of the original hw-app-tezos file, but modifed to be more
+This is a version of the original hw-app-tezos file, but modifed to be more
 friendly to native mobile applications, not using React Native. This file needs to be
 built sperately using the included web-pack file and imported to a swift application,
 and leveraged using JSContext
@@ -29,25 +29,26 @@ and leveraged using JSContext
 import invariant from "invariant";
 import bs58check from "bs58check";
 import blake2b from "blake2b";
-//import Transport from "@ledgerhq/hw-transport";
 
 
 
 
 /*
 Native Transport
-*/
 
+Modified version of react-native-hw-trasnport-ble. The construnctor takes in a write function,
+that will be bound to a ntaive swift function during setup. This allows the JS code to invoke
+the native Swift bluetooth functions
+*/
 class NativeTransport {
 	
 	mtuSize = 20;
 	nativeWriteFunction: (data: String) => void;
 	
 	constructor(nativeWriter: (data: String) => void) {
-		//super()
 		this.nativeWriteFunction = nativeWriter
 	}
-
+	
 	send = async (cla: number, ins: number, p1: number, p2: number, data: Buffer = Buffer.alloc(0)): Promise<Buffer> => {
 
 		const buffer = Buffer.concat([
@@ -72,7 +73,6 @@ class NativeTransport {
 /*
 APDU handling
 */
-
 const TagId = 0x05;
 
 function chunkBuffer(buffer: Buffer, sizeForIndex: (arg0: number) => number): Array<Buffer> {
@@ -172,8 +172,12 @@ const receiveAPDU = (apduString: string): any => {
 
 /*
 Tezos App
-*/
 
+Modified version of the Tezos app in the same directory. Async methods have been turned into non-async public methods.
+Instead of subscribing to observable from transport, the transport function is called and control passed to that.
+Its the responsiblity of the native swift code to then call the correspoding function to complete the process,
+by formatting or using the data that comes back
+*/
 const TezosCurves = {
 	ED25519: 0x00,
 	SECP256K1: 0x01,
@@ -211,8 +215,6 @@ class Tezos {
  
 	constructor(transport: NativeTransport) {
 		this.transport = transport;
-
-		//transport.decorateAppAPIMethods(this, ["getAddress", "signOperation", "getVersion"], "XTZ");
 	}
  
 	/**
@@ -352,13 +354,13 @@ function convertAPDUtoAddress(hex: string): GetAddressResult {
 	return res;
 }
 
-function convertAPDUtoSignature(hex: string): String {
+function convertAPDUtoSignature(hex: string): any {
 	let response = new Buffer(hex, "hex")
 
 	invariant(response, "hw-app-xtz: response is set");
 	const signature = response.slice(0, response.length - 2).toString("hex");
 		
-	return signature;
+	return { signature: signature };
 }
  
 // TODO use bip32-path library
