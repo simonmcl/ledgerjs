@@ -336,13 +336,13 @@ class Tezos {
 	}
 }
 
-function convertAPDUtoAddress(hex: string): GetAddressResult {
+function convertAPDUtoAddress(hex: string): any {
 	let payload = new Buffer(hex, "hex")
  
 	const publicKeyLength = payload[0];
 	if (!publicKeyLength) {
 		// it seems to be a bug that apps returns empty answer
-		throw new Error("invalid public key");
+		return { error: "invalid public key" }
 	}
 
 	const publicKey = payload.slice(1, 1 + publicKeyLength);
