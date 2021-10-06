@@ -266,8 +266,9 @@ class Tezos {
 	The purpose of this function is to generate the APDU needed to fetch the data, and then pass that APDU to the native Swift code.
 	Swift will then get the response, pass it into a receiveAPDU and call the convert function `convertAPDUtoSignature` with the result
 	*/
-	public signOperation(path: string, rawTxHex: string, options: {curve?: Curve;} = {}): void {
+	public signOperation(path: string, rawTxHex: string, parse: Boolean, options: {curve?: Curve;} = {}): void {
 		const curve = options.curve || 0;
+		const instruction = parse ? 0x04 : 0x05
 		const paths = splitPath(path);
 		let offset = 0;
 		
@@ -312,7 +313,7 @@ class Tezos {
 				code = 0x81;
 			}
  
-			this.transport.send(0x80, 0x04, code, curve, data);
+			this.transport.send(0x80, instruction, code, curve, data);
 		}
 	}
  
