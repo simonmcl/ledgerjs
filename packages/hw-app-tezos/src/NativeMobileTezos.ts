@@ -43,13 +43,13 @@ the native Swift bluetooth functions
 class NativeTransport {
 	
 	mtuSize = 20;
-	nativeWriteFunction: (data: String) => void;
+	nativeWriteFunction: (data: String, expectedNumberOfAPDUs: number) => void;
 	
 	constructor(nativeWriter: (data: String) => void) {
 		this.nativeWriteFunction = nativeWriter
 	}
 	
-	send = async (cla: number, ins: number, p1: number, p2: number, data: Buffer = Buffer.alloc(0)): Promise<Buffer> => {
+	public send(cla: number, ins: number, p1: number, p2: number, data: Buffer = Buffer.alloc(0), numberOfAPDUs: number = 1): void {
 
 		const buffer = Buffer.concat([
 			Buffer.from([cla, ins, p1, p2]),
@@ -58,9 +58,7 @@ class NativeTransport {
 		])
 
 		const msgIn = buffer.toString("hex")
-		this.nativeWriteFunction(msgIn)
-
-		return buffer
+		this.nativeWriteFunction(msgIn, numberOfAPDUs)
 	};
 
 	setScrambleKey() { }
@@ -258,7 +256,7 @@ class Tezos {
 			buffer.writeUInt32BE(element, 1 + 4 * index);
 		});
 
-		this.transport.send(cla, ins, p1, p2, buffer);
+		this.transport.send(cla, ins, p1, p2, buffer, 1);
 	}
 	
 	/*
@@ -268,10 +266,14 @@ class Tezos {
 	*/
 	public signOperation(path: string, rawTxHex: string, parse: Boolean, options: {curve?: Curve;} = {}): void {
 		const curve = options.curve || 0;
-		const instruction = parse ? 0x04 : 0x05
 		const paths = splitPath(path);
 		let offset = 0;
-		
+		var instruction = 0x04;
+
+		if (!parse) {
+			instruction = 0x05;
+		}
+
 		const rawTx = Buffer.from(rawTxHex, "hex");
 		const toSend: Buffer[] = [];
 		
@@ -313,27 +315,8 @@ class Tezos {
 				code = 0x81;
 			}
  
-			this.transport.send(0x80, instruction, code, curve, data);
+			this.transport.send(0x80, instruction, code, curve, data, toSend.length);
 		}
-	}
- 
-	async getVersion(): Promise<GetVersionResult> {
-
-		const [appFlag, major, minor, patch] = await this.transport.send(
-			0x80,
-			0x00,
-			0x00,
-			0x00,
-			Buffer.alloc(0)
-		);
-
-		const bakingApp = appFlag === 1;
-		return {
-			major,
-			minor,
-			patch,
-			bakingApp,
-		};
 	}
 }
 
